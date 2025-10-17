@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title id="details-title">Carregando Detalhes...</title>
+        <link rel="stylesheet" type="text/css" href="./details.css">
+
+</head>
+<body>
+    <h1 id="media-title"></h1>
+    <p><a href="catalog.html">Voltar ao Catálogo</a></p>
+
+    <div id="media-details">
+        </div>
+
+    <p id="message-box" style="color: green; font-weight: bold;"></p>
+
+    <button id="favorite-button" data-favorite-state="false">
+        Carregando...
+    </button>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3001/api/media';
+        let mediaId = null;
+
+        function updateButton(isFavorite) {
+            const btn = document.getElementById('favorite-button');
+            btn.dataset.favoriteState = isFavorite;
+            btn.textContent = isFavorite ? 'Remover Favorito' : 'Favoritar';
+            btn.style.backgroundColor = isFavorite ? 'salmon' : 'lightgreen';
+        }
+
+        async function toggleFavorite(isFavorite) {
+            const messageBox = document.getElementById('message-box');
+            messageBox.textContent = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/${mediaId}/favorite`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ state: isFavorite })
+                });
+
+                if (!response.ok) throw new Error('Falha ao atualizar favorito.');
+                
+                updateButton(isFavorite);
+                messageBox.textContent = isFavorite ? 'Adicionado aos Favoritos!' : 'Removido dos Favoritos!';
+
+            } catch (error) {
+                messageBox.textContent = `Erro: ${error.message}`;
+            }
+        }
+
+        async function loadDetails() {
+            const params = new URLSearchParams(window.location.search);
+            mediaId = params.get('id');
+            const titleElement = document.getElementById('media-title');
+            const detailsDiv = document.getElementById('media-details');
+            const btn = document.getElementById('favorite-button');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${mediaId}`);
+                if (!response.ok) throw new Error('Título não encontrado.');
+                
+                const item = await response.json();
+                
+                document.getElementById('details-title').textContent = `Detalhes: ${item.title}`;
+                titleElement.textContent = item.title;
+                detailsDiv.innerHTML = `
+                    <p><strong>Tipo:</strong> ${item.type}</p>
+                    <p><strong>Ano:</strong> ${item.year}</p>
+                    <p><strong>Rating:</strong> ${item.rating}</p>
+                `;
+
+                // Inicializa o botão com o estado atual
+                updateButton(item.isFavorite);
+                btn.onclick = () => {
+                    const currentState = btn.dataset.favoriteState === 'true';
+                    toggleFavorite(!currentState); // Alterna o estado
+                };
+
+            } catch (error) {
+                titleElement.textContent = 'Erro ao carregar detalhes.';
+                detailsDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                btn.style.display = 'none';
+            }
+        }
+        
+        loadDetails();
+    </script>
+</body>
+</html>

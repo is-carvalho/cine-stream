@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Minha Lista | CineStream Dashboard</title>
+</head>
+<body>
+    <h1>Minha Lista de Favoritos</h1>
+    <p>
+        <a href="catalog.html">Voltar ao Catálogo</a>
+    </p>
+
+    <ul id="favorites-list">
+        <li>Carregando favoritos...</li>
+    </ul>
+
+    <script>
+        const API_FAVORITES_URL = 'http://localhost:3001/api/favorites';
+        
+        async function loadFavorites() {
+            const list = document.getElementById('favorites-list');
+            try {
+                const response = await fetch(API_FAVORITES_URL);
+                if (!response.ok) throw new Error('Erro ao carregar favoritos');
+
+                const favorites = await response.json();
+                
+                list.innerHTML = '';
+                if (favorites.length === 0) {
+                    list.innerHTML = '<li>Você não possui favoritos na sua lista.</li>';
+                    return;
+                }
+
+                favorites.forEach(item => {
+                    const li = document.createElement('li');
+                    // Usamos data-id para que os testes de aceitação possam identificá-los
+                    li.innerHTML = `
+                        <a href="details.html?id=${item.id}" data-id="${item.id}" data-title="${item.title}">
+                            ${item.title} (${item.year})
+                        </a>
+                    `;
+                    list.appendChild(li);
+                });
+
+            } catch (error) {
+                list.innerHTML = `<li style="color: red;">Erro ao carregar: ${error.message}</li>`;
+            }
+        }
+        loadFavorites();
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo | CineStream</title>
+    <link rel="stylesheet" type="text/css" href="./catalog.css">
+</head>
+<body>
+    <h1>Catálogo Principal</h1>
+    <p class="menu">
+        <a href="favorites.html">Minha Lista de Favoritos</a> |
+        <a href="catalog.html">Recarregar Catálogo</a>
+    </p>
+
+    <ul id="media-list">
+        <li>Carregando títulos...</li>
+    </ul>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api/media';
+        
+        async function loadCatalog() {
+            const list = document.getElementById('media-list');
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Erro ao carregar o catálogo');
+
+                const media = await response.json();
+                
+                list.innerHTML = '';
+                if (media.length === 0) {
+                    list.innerHTML = '<li>Nenhum título disponível.</li>';
+                    return;
+                }
+
+                media.forEach(item => {
+                    const li = document.createElement('li');
+                    // Usamos data-id para facilitar a busca no Puppeteer
+                    li.innerHTML = `
+                        <a href="details.html?id=${item.id}" data-id="${item.id}" data-title="${item.title}">
+                            ${item.title} (${item.year}) - ${item.type}
+                        </a>
+                    `;
+                    list.appendChild(li);
+                });
+
+            } catch (error) {
+                list.innerHTML = `<li style="color: red;">Erro ao carregar: ${error.message}</li>`;
+            }
+        }
+        loadCatalog();
+    </script>
+</body>
+</html>
