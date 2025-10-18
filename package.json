@@ -1,0 +1,33 @@
+{
+  "name": "cinestream",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test:acceptance": "jest"
+  },
+  "devDependencies": {
+    "@cucumber/gherkin": "^36.0.0",
+    "jest": "^30.2.0",
+    "jest-cucumber": "^4.5.0",
+    "puppeteer": "^24.25.0"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/tests/acceptance/**/*.steps.js"
+    ]
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/is-carvalho/cine-stream.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/is-carvalho/cine-stream/issues"
+  },
+  "homepage": "https://github.com/is-carvalho/cine-stream#readme",
+  "description": ""
+}
