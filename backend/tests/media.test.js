@@ -57,4 +57,20 @@ describe('Testes Unitários da Lógica de Negócios', () => {
             status: 400
         });
     });
+
+    test('toggleFavorite: deve desmarcar o favorito quando o state é string "false"', async () => {
+        // The Witcher (ID 2) começa como favorito (true)
+        const result = await mediaService.toggleFavorite(2, 'false'); 
+        expect(result.data.isFavorite).toBe(false);
+        const updatedFavorites = await mediaService.getFavorites();
+        expect(updatedFavorites).toHaveLength(0);
+    });
+
+    test('toggleFavorite: deve manter o favorito quando o state é string "true"', async () => {
+        // The Witcher (ID 2) começa como favorito (true)
+        const result = await mediaService.toggleFavorite(2, 'true'); 
+        expect(result.data.isFavorite).toBe(true);
+        const updatedFavorites = await mediaService.getFavorites();
+        expect(updatedFavorites).toHaveLength(1);
+    });
 });
