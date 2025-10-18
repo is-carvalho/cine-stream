@@ -4,7 +4,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "test": "npx jest"
+    "test": "npx jest",
+    "test:coverage": "npx jest --coverage"
+
   },
   "author": "",
   "license": "ISC",
