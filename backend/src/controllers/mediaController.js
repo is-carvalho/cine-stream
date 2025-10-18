@@ -28,9 +28,20 @@ exports.listFavorites = async (req, res) => {
 };
 
 exports.handleFavoriteToggle = async (req, res) => {
-    const { state } = req.body;
+    const { state } = req.body; 
     try {
         const result = await mediaService.toggleFavorite(req.params.id, state);
+        res.status(result.status).json(result.data);
+    } catch (error) {
+        res.status(error.status || 500).json({ error: error.message });
+    }
+};
+
+exports.addReviewToMedia = async (req, res) => {
+    const { user, rating, comment } = req.body;
+    const mediaId = parseInt(req.params.id);
+    try {
+        const result = await mediaService.addReview(mediaId, { user, rating, comment });
         res.status(result.status).json(result.data);
     } catch (error) {
         res.status(error.status || 500).json({ error: error.message });
