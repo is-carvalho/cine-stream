@@ -2,16 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Minha Lista | CineStream Dashboard</title>
+    <title>CineStream</title>
+    <link rel="stylesheet" type="text/css" href="./favorites.css"> 
 </head>
 <body>
-    <h1>Minha Lista de Favoritos</h1>
-    <p>
-        <a href="catalog.html">Voltar ao Catálogo</a>
-    </p>
+    <header class="page-header">
+        <h1>Minha Lista de Favoritos</h1>
+        <p class="menu">
+            <a href="catalog.html">Voltar ao Catálogo</a>
+        </p>
+    </header>
 
     <ul id="favorites-list">
-        <li>Carregando favoritos...</li>
+        <li class="loading-message">Carregando favoritos...</li>
     </ul>
 
     <script>
@@ -27,23 +30,28 @@
                 
                 list.innerHTML = '';
                 if (favorites.length === 0) {
-                    list.innerHTML = '<li>Você não possui favoritos na sua lista.</li>';
+                    list.innerHTML = '<li class="empty-message">Você não possui favoritos na sua lista.</li>';
                     return;
                 }
 
                 favorites.forEach(item => {
                     const li = document.createElement('li');
-                    // Usamos data-id para que os testes de aceitação possam identificá-los
+                    li.className = 'media-card';
+                    
                     li.innerHTML = `
-                        <a href="details.html?id=${item.id}" data-id="${item.id}" data-title="${item.title}">
-                            ${item.title} (${item.year})
+                        <a href="details.html?id=${item.id}" 
+                           data-id="${item.id}" 
+                           data-title="${item.title}">
+                            <h3>${item.title}</h3>
+                            <p class="card-meta">${item.type || 'Filme/Série'} | ${item.year}</p>
+                            <p class="card-rating">Avaliação: ${item.averageRating || 'S/N'}</p>
                         </a>
                     `;
                     list.appendChild(li);
                 });
 
             } catch (error) {
-                list.innerHTML = `<li style="color: red;">Erro ao carregar: ${error.message}</li>`;
+                list.innerHTML = `<li class="error-message" style="color: red;">Erro ao carregar: ${error.message}</li>`;
             }
         }
         loadFavorites();

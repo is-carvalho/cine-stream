@@ -7,21 +7,11 @@ body {
     line-height: 1.6;
 }
 
-h1 {
+h1, h2 {
     color: #e50914;
     border-bottom: 2px solid #333;
     padding-bottom: 10px;
-    margin-bottom: 30px;
-}
-
-a {
-    color: #e5e5e5;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-a:hover {
-    color: #e50914;
+    margin-bottom: 20px;
 }
 
 .details-container {
@@ -31,6 +21,17 @@ a:hover {
     background-color: #222;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.details-container p a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.details-container p a:hover {
+    color: #e50914;
 }
 
 #media-details p {
@@ -64,9 +65,93 @@ a:hover {
     transform: scale(0.98);
 }
 
-#message-box {
+#message-box, #review-message {
     margin-top: 15px;
     padding: 10px;
     border-radius: 4px;
     background-color: #333;
+    font-weight: bold;
+}
+
+
+#review-form {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: 1px solid #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #e5e5e5;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #444;
+    color: #e5e5e5;
+    box-sizing: border-box; 
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+#submit-review-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e50914; 
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#submit-review-btn:hover {
+    background-color: #c70811;
+}
+
+
+#reviews-list {
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+.review-item {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 5px solid #e50914;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.review-item p {
+    margin: 5px 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+.review-item strong {
+    color: #FFD700;
+}
+
+.review-item small {
+    display: block;
+    color: #bbb;
+    font-size: 0.85em;
+    margin-top: 5px;
 }

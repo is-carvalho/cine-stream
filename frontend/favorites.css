@@ -1,0 +1,111 @@
+:root {
+    --primary-red: #e50914;
+    --background-dark: #141414;
+    --text-light: #e5e5e5;
+    --card-background: #222;
+    --border-light: #333;
+    --meta-text-color: #a0a0a0;
+    --secondary-link: #FF5722;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    color: var(--primary-red);
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 2.2em;
+}
+
+
+.menu {
+    margin-bottom: 30px;
+}
+
+.menu a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.menu a:hover {
+    color: var(--primary-red);
+}
+
+#favorites-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 1200px;
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+
+.media-card {
+    background-color: var(--card-background);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--border-light);
+    min-height: 120px;
+}
+
+.media-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+.media-card a {
+    text-decoration: none;
+    color: var(--text-light);
+    display: block;
+    height: 100%;
+}
+
+.media-card h3 {
+    color: var(--text-light);
+    font-size: 1.2em;
+    margin: 0 0 5px 0;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.card-meta, .card-rating {
+    font-size: 0.9em;
+    color: var(--meta-text-color);
+    margin: 5px 0;
+}
+
+.card-rating {
+    color: var(--highlight-color);
+    font-weight: bold;
+}
+
+
+.loading-message, .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background-color: #2a2a2a;
+    border: 1px dashed var(--border-light);
+    border-radius: 6px;
+    color: var(--meta-text-color);
+    font-style: italic;
+    font-size: 1.1em;
+}

@@ -2,22 +2,49 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title id="details-title">Carregando Detalhes...</title>
-        <link rel="stylesheet" type="text/css" href="./details.css">
-
-</head>
+    <title id="details-title">CineStream</title>
+    <link rel="stylesheet" type="text/css" href="./details.css"> </head>
 <body>
-    <h1 id="media-title"></h1>
-    <p><a href="catalog.html">Voltar ao Catálogo</a></p>
+    
+    <div class="details-container">
+        <h1 id="media-title"></h1>
+        <p><a href="catalog.html">Voltar ao Catálogo</a></p>
 
-    <div id="media-details">
+        <div id="media-details">
+            </div>
+
+        <p id="message-box"></p> 
+        <button id="favorite-button" data-favorite-state="false">
+            Carregando...
+        </button>
+
+        <hr>
+
+        <h2>Deixe sua Avaliação</h2>
+        <form id="review-form">
+            <div class="form-group">
+                <label for="review-user">Seu Nome:</label>
+                <input type="text" id="review-user" required>
+            </div>
+            <div class="form-group">
+                <label for="review-rating">Nota (1-10):</label>
+                <input type="number" id="review-rating" min="1" max="10" required>
+            </div>
+            <div class="form-group">
+                <label for="review-comment">Comentário:</label>
+                <textarea id="review-comment" rows="4" required></textarea>
+            </div>
+            <button type="submit" id="submit-review-btn">Enviar Avaliação</button>
+            <p id="review-message" style="margin-top: 10px;"></p>
+        </form>
+
+        <hr>
+
+        <h2>Avaliações Existentes</h2>
+        <div id="reviews-list">
+            <p>Nenhuma avaliação ainda. Seja o primeiro!</p>
         </div>
-
-    <p id="message-box" style="color: green; font-weight: bold;"></p>
-
-    <button id="favorite-button" data-favorite-state="false">
-        Carregando...
-    </button>
+    </div>
 
     <script>
         const API_BASE_URL = 'http://localhost:3001/api/media';
@@ -26,8 +53,7 @@
         function updateButton(isFavorite) {
             const btn = document.getElementById('favorite-button');
             btn.dataset.favoriteState = isFavorite;
-            btn.textContent = isFavorite ? 'Remover Favorito' : 'Favoritar';
-            btn.style.backgroundColor = isFavorite ? 'salmon' : 'lightgreen';
+            btn.textContent = isFavorite ? 'Remover Favorito' : 'Adicionar à Minha Lista';
         }
 
         async function toggleFavorite(isFavorite) {
@@ -45,15 +71,74 @@
                 
                 updateButton(isFavorite);
                 messageBox.textContent = isFavorite ? 'Adicionado aos Favoritos!' : 'Removido dos Favoritos!';
+                messageBox.style.color = 'lightgreen';
+                messageBox.style.backgroundColor = '#333';
 
             } catch (error) {
                 messageBox.textContent = `Erro: ${error.message}`;
+                messageBox.style.color = 'red';
+                messageBox.style.backgroundColor = '#333';
             }
         }
 
+        function renderReviews(reviews) {
+            const reviewsListDiv = document.getElementById('reviews-list');
+            reviewsListDiv.innerHTML = ''; 
+
+            if (reviews && reviews.length > 0) {
+                reviews.sort((a, b) => b.timestamp - a.timestamp); 
+                reviews.forEach(review => {
+                    const reviewDiv = document.createElement('div');
+                    reviewDiv.classList.add('review-item');
+                    reviewDiv.innerHTML = `
+                        <p><strong>${review.user}</strong> deu nota ${review.rating}/10</p>
+                        <p>${review.comment}</p>
+                        <small>Em: ${ new Date(review.timestamp).toLocaleDateString('pt-br')}</small>
+                    `;
+                    reviewsListDiv.appendChild(reviewDiv);
+                });
+            } else {
+                reviewsListDiv.innerHTML = '<p>Nenhuma avaliação ainda. Seja o primeiro!</p>';
+            }
+        }
+
+        document.getElementById('review-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const user = document.getElementById('review-user').value;
+            const rating = document.getElementById('review-rating').value;
+            const comment = document.getElementById('review-comment').value;
+            const reviewMessageBox = document.getElementById('review-message');
+            reviewMessageBox.textContent = '';
+            reviewMessageBox.style.color = '';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${mediaId}/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user, rating, comment })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Falha ao enviar avaliação.');
+                }
+                
+                reviewMessageBox.textContent = 'Avaliação enviada com sucesso!';
+                reviewMessageBox.style.color = 'lightgreen';
+                document.getElementById('review-form').reset();
+
+                loadDetails(); 
+
+            } catch (error) {
+                reviewMessageBox.textContent = `Erro: ${error.message}`;
+                reviewMessageBox.style.color = 'red';
+            }
+        });
+
+
         async function loadDetails() {
             const params = new URLSearchParams(window.location.search);
-            mediaId = params.get('id');
+            mediaId = parseInt(params.get('id'));
             const titleElement = document.getElementById('media-title');
             const detailsDiv = document.getElementById('media-details');
             const btn = document.getElementById('favorite-button');
@@ -72,17 +157,19 @@
                     <p><strong>Rating:</strong> ${item.rating}</p>
                 `;
 
-                // Inicializa o botão com o estado atual
                 updateButton(item.isFavorite);
                 btn.onclick = () => {
                     const currentState = btn.dataset.favoriteState === 'true';
-                    toggleFavorite(!currentState); // Alterna o estado
+                    toggleFavorite(!currentState);
                 };
+
+                renderReviews(item.reviews);
 
             } catch (error) {
                 titleElement.textContent = 'Erro ao carregar detalhes.';
                 detailsDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
                 btn.style.display = 'none';
+                document.getElementById('review-form').style.display = 'none'; 
             }
         }
         
